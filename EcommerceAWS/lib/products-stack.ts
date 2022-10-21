@@ -13,7 +13,7 @@ export class ProductsStack extends cdk.Stack {
 
         this.productsFetchHandler = new lambdaNodeJs.NodejsFunction(this, 
             "productsFetchFunction", {
-                FunctionName: "productsFetchFunction",
+                functionName: "productsFetchFunction",
                 entry: "lambda/products/productsFetchFunction.ts",
                 handler: "handler",
                 memorySize: 128,
