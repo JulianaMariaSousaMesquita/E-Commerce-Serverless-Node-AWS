@@ -21,7 +21,7 @@ const productsStack = new ProductsStack(app, "ProductsApp", {
   env: env
 })
 
-const eCommerceStack = new ECommerceStack(app, "ECommerceApp", {
+const eCommerceStack = new ECommerceStack(app, "ECommerceApi", {
   productsFetchHandler: productsStack.productsFetchHandler,
   tags: tags,
   env: env
