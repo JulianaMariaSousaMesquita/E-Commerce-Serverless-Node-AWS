@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { ProductsStack } from '../lib/products-stack';
-import { ECommerceStack } from '../lib/ecommerce-stack';
+import { ProductsAppStack } from '../lib/productsApp-stack';
+import { ECommerceApiStack } from '../lib/ecommerceApi-stack';
 
 const app = new cdk.App();
 
@@ -16,16 +16,16 @@ const tags = {
   team: "JulianaMesquita"
 }
 
-const productsStack = new ProductsStack(app, "ProductsApp", {
+const productsAppStack = new ProductsAppStack(app, "ProductsApp", {
   tags: tags,
   env: env
 })
 
-const eCommerceStack = new ECommerceStack(app, "ECommerceApi", {
-  productsFetchHandler: productsStack.productsFetchHandler,
+const eCommerceApiStack = new ECommerceApiStack(app, "ECommerceApi", {
+  productsFetchHandler: productsAppStack.productsFetchHandler,
   tags: tags,
   env: env
 })
 
-eCommerceStack.addDependency(productsStack)
+eCommerceApiStack.addDependency(productsAppStack)
 
