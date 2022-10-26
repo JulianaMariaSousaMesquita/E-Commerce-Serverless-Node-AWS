@@ -17,7 +17,7 @@ export async function handler(event: APIGatewayProxyEvent,
 
         if(event.resource === "/products"){
             if(method === "GET"){
-                console.log('GET /Products')
+                console.log('GET /products')
                 const products = await productRepository.getAllProducts()
                 return {
                     statusCode: 200,
