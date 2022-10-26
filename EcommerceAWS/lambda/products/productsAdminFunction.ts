@@ -32,10 +32,20 @@ export async function handler(event: APIGatewayProxyEvent,
             }
             }else if (event.httpMethod === "DELETE"){
                 console.log(`DELETE /products${productsId}`)
-            return{
-                statusCode:200,
-                body:`DELETE /products${productsId}`
-            }
+                try{
+                    const product = await productRepository.deleteProduct(productsId)
+                    return{
+                        statusCode:200,
+                        body:JSON.stringify(product)
+                    }
+                }catch (error){
+                    console.error((<Error>error).message)
+                    return{
+                        statusCode:404,
+                        body:(<Error>error).message
+                    }
+                }
+            
             }
         }
         return{
