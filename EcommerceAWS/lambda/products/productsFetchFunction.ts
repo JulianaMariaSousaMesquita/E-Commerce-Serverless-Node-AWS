@@ -27,9 +27,19 @@ export async function handler(event: APIGatewayProxyEvent,
         }else if(event.resource === "/products/{id}"){
             const productId =  event.pathParameters!.id as string
             console.log(`GET / products/${productId}`)
-            return {
-                statusCode:200,
-                body: `GET / products/${productId}`
+
+            try{
+                const product = await productRepository.getProductId(productId)
+                return {
+                    statusCode:200,
+                    body: JSON.stringify(product)
+                }
+            }catch (error) {
+                console.error((<Error>error).message)
+                return{
+                    statusCode: 404,
+                    body: (<Error>error).message
+                }
             }
         }
 
