@@ -26,10 +26,20 @@ export async function handler(event: APIGatewayProxyEvent,
             const productsId = event.pathParameters!.id as string
             if(event.httpMethod === "PUT"){
                 console.log(`PUT /products${productsId}`)
-            return{
-                statusCode:200,
-                body:`PUT /products${productsId}`
-            }
+                const product = JSON.parse(event.body!) as Product
+
+                try{
+                    const productUpdate = await productRepository.updateProduct(productsId,product)
+                    return{
+                        statusCode:200,
+                        body:JSON.stringify(productUpdate)
+                    }
+                }catch (ConditionalCheckFailedException) {
+                    return {
+                        statusCode: 404,
+                        body: 'Product not found'
+                    }
+                }                
             }else if (event.httpMethod === "DELETE"){
                 console.log(`DELETE /products${productsId}`)
                 try{
