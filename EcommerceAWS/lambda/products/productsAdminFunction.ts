@@ -1,5 +1,11 @@
 import { Method } from "aws-cdk-lib/aws-apigateway"
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context }from "aws-lambda"
+import { ProductRepository } from "/opt/nodejs/productsLayer"
+import { DynamoDB } from "aws-sdk"
+
+const ddbProducts = process.env.PRODUCTS_DDB!
+const ddbClient = new DynamoDB.DocumentClient()
+const productRepository = new ProductRepository(ddbClient, ddbProducts)
 
 export async function handler(event: APIGatewayProxyEvent, 
     context: Context): Promise <APIGatewayProxyResult> {
