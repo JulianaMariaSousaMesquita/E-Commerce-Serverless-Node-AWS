@@ -1,6 +1,6 @@
 import { Method } from "aws-cdk-lib/aws-apigateway"
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context }from "aws-lambda"
-import { ProductRepository } from "/opt/nodejs/productsLayer"
+import { Product, ProductRepository } from "/opt/nodejs/productsLayer"
 import { DynamoDB } from "aws-sdk"
 
 const ddbProducts = process.env.PRODUCTS_DDB!
@@ -16,9 +16,11 @@ export async function handler(event: APIGatewayProxyEvent,
         
         if(event.resource === "/products"){
             console.log("POST /products")
+            const product = await JSON.parse(event.body!) as Product
+            const productCreated = await productRepository.create(product)
             return{
                 statusCode:201,
-                body:"POST /products"
+                body: JSON.stringify(productCreated)
             }
         }else if (event.resource === "products/{id}"){
             const productsId = event.pathParameters!.id as string
