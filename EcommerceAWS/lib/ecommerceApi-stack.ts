@@ -75,8 +75,41 @@ export class ECommerceApiStack extends cdk.Stack{
     }
 
     private createCognitoAuth(){
+        //Função lambda para Trigger do user pool
+        const postConfirmationHandler = new lambdaNodeJs.NodejsFunction(this, "PostConfirmationFunction", {
+            functionName: "PostConfirmationFunction",
+            entry: "lambda/auth/postConfirmationFunction.ts",
+            handler: "handler",
+            memorySize: 128,
+            timeout: cdk.Duration.seconds(2),
+            bundling:{
+                minify: true,
+                sourceMap: false
+            },
+            tracing: lambda.Tracing.ACTIVE,
+            insightsVersion: lambda.LambdaInsightsVersion.VERSION_1_0_119_0
+        })
+        
+        const preAuthenticationHandler = new lambdaNodeJs.NodejsFunction(this, "PreAuthenticationFunction", {
+            functionName: "PreAuthenticationFunction",
+            entry: "lambda/auth/preAuthenticationFunction.ts",
+            handler: "handler",
+            memorySize: 128,
+            timeout: cdk.Duration.seconds(2),
+            bundling:{
+                minify: true,
+                sourceMap: false
+            },
+            tracing: lambda.Tracing.ACTIVE,
+            insightsVersion: lambda.LambdaInsightsVersion.VERSION_1_0_119_0
+        })
+
         //Cognito customer UserPool (Usuários que podem acessar plataforma para pesquisar produtos)
         this.customerPool = new cognito.UserPool(this, "CustomerPool", {
+            lambdaTriggers: {
+                preAuthentication: preAuthenticationHandler,
+                postConfirmation: postConfirmationHandler
+            },
             userPoolName: "CustomerPool",
             removalPolicy: cdk.RemovalPolicy.DESTROY,
             selfSignUpEnabled: true,
